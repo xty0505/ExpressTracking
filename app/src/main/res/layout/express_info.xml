@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/express_info_num_string"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/NumString"
+                android:textColor="#000"/>
+
+            <TextView
+                android:id="@+id/express_info_num_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:textColor="#000"/>
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/express_info_comp_string"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/CompString"
+                android:textColor="#000"/>
+
+            <TextView
+                android:id="@+id/express_info_comp_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:textColor="#000"/>
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/express_info_tracking_info_string"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/TrackingInfoString"
+                android:textColor="#000"/>
+        </TableRow>
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/express_info_tracking_info_display"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        />
+    <Button
+        android:id="@+id/express_info_tracking_btn"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="@string/TrackingString"
+        />
+
+</LinearLayout>
