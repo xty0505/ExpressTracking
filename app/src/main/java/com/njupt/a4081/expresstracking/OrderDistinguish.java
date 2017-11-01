@@ -175,6 +175,7 @@ public class OrderDistinguish {
             String line;
             while ((line = in.readLine()) != null) {
                 result.append(line);
+                result.append("\n");
             }
         } catch (Exception e) {
             e.printStackTrace();
