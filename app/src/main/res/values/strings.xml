@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ExpressTracking</string>
+    <string name="query_search">输入单号一键查询</string>
 </resources>
