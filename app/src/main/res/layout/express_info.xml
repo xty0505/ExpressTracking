@@ -23,7 +23,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:textColor="#000"/>
+                android:textColor="#000"
+                android:inputType="textMultiLine"/>
         </TableRow>
 
         <TableRow>
@@ -55,18 +56,26 @@
         </TableRow>
     </TableLayout>
 
-    <TextView
+    <ScrollView
         android:id="@+id/express_info_tracking_info_display"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="9"
-        />
+        android:layout_height="415dp">
+
+        <LinearLayout
+            android:id="@+id/express_info_tracking_info_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+    </ScrollView>
+
+
     <Button
         android:id="@+id/express_info_tracking_btn"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="315dp"
         android:layout_weight="1"
-        android:text="@string/TrackingString"
-        />
+        android:text="@string/TrackingString" />
 
 </LinearLayout>

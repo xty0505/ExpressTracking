@@ -6,6 +6,8 @@ package com.njupt.a4081.expresstracking;
 
 
 
+import android.os.Bundle;
+import android.os.TokenWatcher;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -18,6 +20,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,6 +57,23 @@ public class OrderDistinguish {
         params.put("RequestData", urlEncoder(requestData, "UTF-8"));
         params.put("EBusinessID", EBusinessID);
         params.put("RequestType", "2002");
+        String dataSign=encrypt(requestData, AppKey, "UTF-8");
+        params.put("DataSign", urlEncoder(dataSign, "UTF-8"));
+        params.put("DataType", "2");
+
+        String result=sendPost(ReqURL, params);
+
+        //根据公司业务处理返回的信息......
+
+        return result;
+    }
+    public String getOrderTracesByJson(String expCode, String expNo) throws Exception{
+        String requestData= "{'OrderCode':'','ShipperCode':'" + expCode + "','LogisticCode':'" + expNo + "'}";
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("RequestData", urlEncoder(requestData, "UTF-8"));
+        params.put("EBusinessID", EBusinessID);
+        params.put("RequestType", "1002");
         String dataSign=encrypt(requestData, AppKey, "UTF-8");
         params.put("DataSign", urlEncoder(dataSign, "UTF-8"));
         params.put("DataType", "2");
@@ -174,6 +194,7 @@ public class OrderDistinguish {
                     new InputStreamReader(conn.getInputStream(), "UTF-8"));
             String line;
             while ((line = in.readLine()) != null) {
+                Log.i("msg ",line);
                 result.append(line);
                 result.append("\n");
             }
