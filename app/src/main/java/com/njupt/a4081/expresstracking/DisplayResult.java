@@ -1,5 +1,6 @@
 package com.njupt.a4081.expresstracking;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,6 +8,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -33,6 +35,7 @@ public class DisplayResult extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.express_info);
 
+        //初始化控件
         TextView expNo_textView = (TextView)findViewById(R.id.express_info_num_display);
         TextView expName_textView = (TextView)findViewById(R.id.express_info_comp_display);
         final LinearLayout expTraces_layout = (LinearLayout)findViewById(R.id.express_info_tracking_info_layout);
@@ -55,9 +58,7 @@ public class DisplayResult extends AppCompatActivity {
                 super.handleMessage(msg);
                 Bundle bundle = msg.getData();
                 //动态添加TextView
-                int i = 0;
-                while(!bundle.isEmpty()){
-                    i++;
+                for(int i =0;i < bundle.size()/2;i++){
                     StringBuffer trace = new StringBuffer();
                     TextView txtView = new TextView(DisplayResult.this);
                     expTraces_layout.addView(txtView,layoutParams);
@@ -96,6 +97,7 @@ public class DisplayResult extends AppCompatActivity {
                             if (key.equalsIgnoreCase("State")) {
                                 if (value.toString().equalsIgnoreCase("0")) {
                                     //无轨迹处理
+
                                     break;
                                 }
                                 //有轨迹传值
@@ -138,8 +140,6 @@ public class DisplayResult extends AppCompatActivity {
             }
         };
         new Thread(runnable).start();
-
-
     }
 
 }
