@@ -2,14 +2,18 @@ package com.njupt.a4081.expresstracking;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -41,6 +45,8 @@ public class DisplayResult extends AppCompatActivity {
         final LinearLayout expTraces_layout = (LinearLayout)findViewById(R.id.express_info_tracking_info_layout);
         final LinearLayout.LayoutParams layoutParams =
                 new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        final ScrollView expTraces_scrollView = (ScrollView)findViewById(R.id.express_info_tracking_info_display);
+        final Button expTracking_btn = (Button)findViewById(R.id.express_info_tracking_btn);
 
         final Intent iReceive = getIntent();
         final Bundle bd = iReceive.getExtras();
@@ -97,7 +103,10 @@ public class DisplayResult extends AppCompatActivity {
                             if (key.equalsIgnoreCase("State")) {
                                 if (value.toString().equalsIgnoreCase("0")) {
                                     //无轨迹处理
-
+                                    Resources pic = getResources();
+                                    Drawable drawable = pic.getDrawable(R.drawable.notrace);
+                                    expTraces_scrollView.setBackground(drawable);
+                                    expTracking_btn.setVisibility(View.INVISIBLE);
                                     break;
                                 }
                                 //有轨迹传值
