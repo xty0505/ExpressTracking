@@ -22,63 +22,65 @@ import java.util.List;
 
 public class SearchingHistoryDataHelper {
     final private static String TABLENAME = "SearchingHistory";
-    final private static String Insert = "insert into " + TABLENAME + "(Number, CompanyCode, " +
-            "Date) values(?, ?, ?)";
-    private SQLiteStatement InsertStmt;
+    final private static String DATABASENAME = "ExpressTracking";
     private OpenHelper oh;
     private SQLiteDatabase db;
 
     public SearchingHistoryDataHelper(final Context context){
-        oh = new OpenHelper(context, TABLENAME);
-        db = oh.getWritableDatabase();
-        InsertStmt = db.compileStatement(Insert);
+        oh = new OpenHelper(context, DATABASENAME);
     }
 
     public boolean InsertHistory(String num, String comp_code){
-        InsertStmt.bindString(1, num);
-        InsertStmt.bindString(2, comp_code);
-        InsertStmt.bindString(3, new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date()));
+        db = oh.getWritableDatabase();
+        String InsertString = "insert into " + TABLENAME + "(Number, CompanyCode, " +
+                "Date) values('" + num + "', '" + comp_code + "', '" + new SimpleDateFormat
+                ("yyyy-MM-dd " +
+                "hh:mm:ss").format(new Date()) + "')";
         try {
-            InsertStmt.executeInsert();
+            db.execSQL(InsertString);
         }
         catch (Exception exception){
-            exception.printStackTrace();
+            Log.e("test", exception.toString());
             return false;
+        }
+        finally {
+            db.close();
         }
         return true;
     }
 
-    public List<String> DisplatHistory(){
+    public List<String> DisplayHistory(){
+        db = oh.getWritableDatabase();
         List<String> rtn = new ArrayList<>();
         Cursor cursor = db.query(TABLENAME, new String[]{"Number", "CompanyCode", "Date"}, null,
                 null, null, null, "Date");
         if(cursor.moveToFirst()){
-            rtn.add(cursor.getString(0)+";"+cursor.getString(1)+";"+cursor.getString(2)+";" +
-                    ""+cursor.getString(3));
+            do{
+                rtn.add(cursor.getString(0)+";"+cursor.getString(1)+";"+cursor.getString(2));
+            }while (cursor.moveToNext());
         }
         if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
+        db.close();
         return rtn;
     }
 
     private class OpenHelper extends SQLiteOpenHelper {
-        private String DBName;
 
         private OpenHelper(Context context, String DBName){
             super(context, DBName, null, 1, null);
-            this.DBName = DBName;
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("create table "+ DBName + "(Number text primary key, CompanyCode text, " +
+            db.execSQL("create table "+ TABLENAME + "(Number text primary key, CompanyCode text, " +
                     "Date text)");
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("drop table if exists " + DBName);
+            db.execSQL("drop table if exists " + TABLENAME);
             onCreate(db);
         }
     }

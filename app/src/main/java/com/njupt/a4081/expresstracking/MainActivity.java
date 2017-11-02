@@ -31,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
         HistorySearching.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent iHistorySearching = new Intent(MainActivity.this, HistorySearching.class);
+                startActivity(iHistorySearching);
             }
         });
 
