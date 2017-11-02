@@ -40,9 +40,9 @@ public class NewSearching extends AppCompatActivity {
         searchView.setIconified(false);
         searchView.requestFocusFromTouch();
 
-        search_btn.setOnClickListener(new View.OnClickListener() {
+        final Runnable nt = new Runnable() {
             @Override
-            public void onClick(View view) {
+            public void run() {
                 // 获取查询
                 String expNo = query_searchView.getQuery().toString();
                 OrderDistinguish api = new OrderDistinguish();
@@ -56,8 +56,8 @@ public class NewSearching extends AppCompatActivity {
                         while (it.hasNext()) {
                             String key = (String) it.next();
                             Object value = jso.get(key);
-                            if (key.equalsIgnoreCase("Success")){
-                                if (value.toString().equalsIgnoreCase("false")){
+                            if (key.equalsIgnoreCase("Success")) {
+                                if (value.toString().equalsIgnoreCase("false")) {
                                     // Print error log
                                     break;
                                 }
@@ -79,6 +79,11 @@ public class NewSearching extends AppCompatActivity {
                                     iDisplay.putExtra("result", bd);
                                     startActivity(iDisplay);
 
+                                    // Save into sql
+                                    SearchingHistoryDataHelper dh = new
+                                            SearchingHistoryDataHelper(NewSearching.this);
+                                    dh.InsertHistory(expNo, bd.getString("ShipperCode"), bd
+                                            .getString("ShipperName"));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -92,6 +97,14 @@ public class NewSearching extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+
+        };
+
+        search_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Thread(nt).start();
             }
         });
 

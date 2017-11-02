@@ -28,7 +28,7 @@ public class SearchingHistoryDataHelper {
     private OpenHelper oh;
     private SQLiteDatabase db;
 
-    private SearchingHistoryDataHelper(final Context context){
+    public SearchingHistoryDataHelper(final Context context){
         oh = new OpenHelper(context, TABLENAME);
         db = oh.getWritableDatabase();
         InsertStmt = db.compileStatement(Insert);
