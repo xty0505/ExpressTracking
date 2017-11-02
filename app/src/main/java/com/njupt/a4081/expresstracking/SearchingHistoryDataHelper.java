@@ -22,8 +22,8 @@ public class SearchingHistoryDataHelper {
     final private static String TABLENAME = "searchingHistory";
     final private static String DATABASENAME = "ExpressTracking";
     final private static String Select = "select * from " + TABLENAME;
-    final private static String Insert = "insert into " + TABLENAME + "(Number, Company, " +
-            "Date) values(?, ?, ?)";
+    final private static String Insert = "insert into " + TABLENAME + "(Number, CompanyCode, " +
+            "CompanyName, Date) values(?, ?, ?, ?)";
     private SQLiteStatement InsertStmt;
     private OpenHelper oh;
     private SQLiteDatabase db;
@@ -34,10 +34,11 @@ public class SearchingHistoryDataHelper {
         InsertStmt = db.compileStatement(Insert);
     }
 
-    public boolean InsertHistory(String num, String comp){
+    public boolean InsertHistory(String num, String comp_code, String comp_name){
         InsertStmt.bindString(1, num);
-        InsertStmt.bindString(2, comp);
-        InsertStmt.bindString(3, new SimpleDateFormat("YYYY-MM-DD HH:MM:SS").format(new Date()));
+        InsertStmt.bindString(2, comp_code);
+        InsertStmt.bindString(3, comp_name);
+        InsertStmt.bindString(4, new SimpleDateFormat("YYYY-MM-DD HH:MM:SS").format(new Date()));
         try {
             InsertStmt.executeInsert();
         }
@@ -53,7 +54,8 @@ public class SearchingHistoryDataHelper {
         Cursor cursor = db.query(TABLENAME, new String[]{"Number", "Company", "Date"}, null,
                 null, null, null, "Date");
         if(cursor.moveToFirst()){
-            rtn.add(cursor.getString(0)+";"+cursor.getString(1)+";"+cursor.getString(2));
+            rtn.add(cursor.getString(0)+";"+cursor.getString(1)+";"+cursor.getString(2)+";" +
+                    ""+cursor.getString(3));
         }
         if (cursor != null && !cursor.isClosed()) {
             cursor.close();
@@ -71,8 +73,8 @@ public class SearchingHistoryDataHelper {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("create table "+ DBName + "(Number text primary key, Company text, " +
-                    "Date text)");
+            db.execSQL("create table "+ DBName + "(Number text primary key, CompanyCode text, " +
+                    "CompanyName text, Date text)");
         }
 
         @Override
