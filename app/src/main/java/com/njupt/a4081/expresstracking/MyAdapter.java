@@ -49,7 +49,6 @@ public class MyAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
         Info info = new Info();
         convertView = layoutInflater.inflate(R.layout.history_item, null);
         info.name = convertView.findViewById(R.id.history_item_name);

@@ -61,8 +61,8 @@ public class HistorySearching extends AppCompatActivity {
             for (String j: c2nMap.keySet()){
                 if (HistoryItem.indexOf(j) != -1){
                     Map<String, String> HistoryMapItem = new HashMap<>();
-                    HistoryMapItem.put("ShippersCode", j);
-                    HistoryMapItem.put("ShippersName", c2nMap.get(j));
+                    HistoryMapItem.put("ShipperCode", j);
+                    HistoryMapItem.put("ShipperName", c2nMap.get(j));
                     HistoryMapItem.put("LogisticCode", HistoryItem.substring(0, HistoryItem
                             .indexOf(';')));
                     HistoryMapItem.put("Time", HistoryItem.substring(HistoryItem.lastIndexOf(';'
@@ -71,6 +71,8 @@ public class HistorySearching extends AppCompatActivity {
                 }
             }
         }
+
+        Log.e("test", HistoryMap.toString());
 
         MyAdapter myAdapter = new MyAdapter(HistorySearching.this, HistoryMap);
         lv.setAdapter(myAdapter);
@@ -83,8 +85,8 @@ public class HistorySearching extends AppCompatActivity {
                 Intent iDisplayResult = new Intent(HistorySearching.this, DisplayResult.class);
 
                 Bundle mBundle = new Bundle();
-                mBundle.putString("ShippersCode", HistoryMap.get((int)id).get("ShippersCode"));
-                mBundle.putString("ShippersName", HistoryMap.get((int)id).get("ShippersName"));
+                mBundle.putString("ShippersCode", HistoryMap.get((int)id).get("ShipperCode"));
+                mBundle.putString("ShippersName", HistoryMap.get((int)id).get("ShipperName"));
                 mBundle.putString("LogisticCode", HistoryMap.get((int)id).get("LogisticCode"));
                 iDisplayResult.putExtras(mBundle);
                 startActivity(iDisplayResult);
