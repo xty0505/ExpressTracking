@@ -53,6 +53,8 @@ public class NewSearching extends AppCompatActivity {
                     try {
                         JSONObject jso = new JSONObject(result);
                         Iterator it = jso.keys();
+                        Bundle bd = new Bundle();
+
                         while (it.hasNext()) {
                             String key = (String) it.next();
                             Object value = jso.get(key);
@@ -62,9 +64,11 @@ public class NewSearching extends AppCompatActivity {
                                     break;
                                 }
                             }
-                            if (key.equalsIgnoreCase("Shippers")) {
+                            else if (key.equalsIgnoreCase("LogisticCode")){
+                                bd.putString(key, value.toString());
+                            }
+                            else if (key.equalsIgnoreCase("Shippers")) {
                                 try {
-                                    Bundle bd = new Bundle();
                                     Intent iDisplay = new Intent(NewSearching.this, DisplayResult
                                             .class);
 
@@ -76,14 +80,13 @@ public class NewSearching extends AppCompatActivity {
                                         Object Value = Jso.get(Key);
                                         bd.putString(Key, Value.toString());
                                     }
-                                    iDisplay.putExtra("result", bd);
+                                    iDisplay.putExtras(bd);
                                     startActivity(iDisplay);
 
                                     // Save into sql
                                     SearchingHistoryDataHelper dh = new
                                             SearchingHistoryDataHelper(NewSearching.this);
-                                    dh.InsertHistory(expNo, bd.getString("ShipperCode"), bd
-                                            .getString("ShipperName"));
+                                    dh.InsertHistory(expNo, bd.getString("ShipperCode"));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }

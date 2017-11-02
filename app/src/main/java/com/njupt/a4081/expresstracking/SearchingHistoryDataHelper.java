@@ -8,8 +8,10 @@ import android.database.sqlite.SQLiteStatement;
 import android.text.style.TtsSpan;
 import android.util.Log;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLData;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,11 +21,9 @@ import java.util.List;
  */
 
 public class SearchingHistoryDataHelper {
-    final private static String TABLENAME = "searchingHistory";
-    final private static String DATABASENAME = "ExpressTracking";
-    final private static String Select = "select * from " + TABLENAME;
+    final private static String TABLENAME = "SearchingHistory";
     final private static String Insert = "insert into " + TABLENAME + "(Number, CompanyCode, " +
-            "CompanyName, Date) values(?, ?, ?, ?)";
+            "Date) values(?, ?, ?)";
     private SQLiteStatement InsertStmt;
     private OpenHelper oh;
     private SQLiteDatabase db;
@@ -34,11 +34,10 @@ public class SearchingHistoryDataHelper {
         InsertStmt = db.compileStatement(Insert);
     }
 
-    public boolean InsertHistory(String num, String comp_code, String comp_name){
+    public boolean InsertHistory(String num, String comp_code){
         InsertStmt.bindString(1, num);
         InsertStmt.bindString(2, comp_code);
-        InsertStmt.bindString(3, comp_name);
-        InsertStmt.bindString(4, new SimpleDateFormat("YYYY-MM-DD HH:MM:SS").format(new Date()));
+        InsertStmt.bindString(3, new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date()));
         try {
             InsertStmt.executeInsert();
         }
@@ -51,7 +50,7 @@ public class SearchingHistoryDataHelper {
 
     public List<String> DisplatHistory(){
         List<String> rtn = new ArrayList<>();
-        Cursor cursor = db.query(TABLENAME, new String[]{"Number", "Company", "Date"}, null,
+        Cursor cursor = db.query(TABLENAME, new String[]{"Number", "CompanyCode", "Date"}, null,
                 null, null, null, "Date");
         if(cursor.moveToFirst()){
             rtn.add(cursor.getString(0)+";"+cursor.getString(1)+";"+cursor.getString(2)+";" +
@@ -74,7 +73,7 @@ public class SearchingHistoryDataHelper {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL("create table "+ DBName + "(Number text primary key, CompanyCode text, " +
-                    "CompanyName text, Date text)");
+                    "Date text)");
         }
 
         @Override
