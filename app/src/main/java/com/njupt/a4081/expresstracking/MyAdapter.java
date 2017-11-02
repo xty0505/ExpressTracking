@@ -56,7 +56,7 @@ public class MyAdapter extends BaseAdapter {
         info.time = convertView.findViewById(R.id.history_item_time);
 
         //设置数据
-        info.name.setText(data.get(position).get("ShippersName"));
+        info.name.setText(data.get(position).get("ShipperName"));
         info.num.setText(data.get(position).get("LogisticCode"));
         info.time.setText(data.get(position).get("Time"));
         return convertView;

@@ -85,8 +85,8 @@ public class HistorySearching extends AppCompatActivity {
                 Intent iDisplayResult = new Intent(HistorySearching.this, DisplayResult.class);
 
                 Bundle mBundle = new Bundle();
-                mBundle.putString("ShippersCode", HistoryMap.get((int)id).get("ShipperCode"));
-                mBundle.putString("ShippersName", HistoryMap.get((int)id).get("ShipperName"));
+                mBundle.putString("ShipperCode", HistoryMap.get((int)id).get("ShipperCode"));
+                mBundle.putString("ShipperName", HistoryMap.get((int)id).get("ShipperName"));
                 mBundle.putString("LogisticCode", HistoryMap.get((int)id).get("LogisticCode"));
                 iDisplayResult.putExtras(mBundle);
                 startActivity(iDisplayResult);
