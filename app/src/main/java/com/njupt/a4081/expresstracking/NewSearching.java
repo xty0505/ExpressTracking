@@ -8,7 +8,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -31,6 +34,9 @@ public class NewSearching extends AppCompatActivity {
 
         final SearchView query_searchView = (SearchView) findViewById(R.id.new_searching_query_searchView);
         Button search_btn = (Button) findViewById(R.id.new_searching_search_btn);
+        final LinearLayout search_layout = (LinearLayout) findViewById(R.id.new_searching_linearLayout);
+        final LinearLayout.LayoutParams layoutParams =
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
 
 
         // 设置SearchView 默认展开
@@ -39,6 +45,16 @@ public class NewSearching extends AppCompatActivity {
         searchView.setFocusable(true);
         searchView.setIconified(false);
         searchView.requestFocusFromTouch();
+
+        final Handler handler = new Handler(){
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                Bundle bundle = msg.getData();
+                TextView textView = new TextView(NewSearching.this);
+                search_layout.addView(textView,layoutParams);
+                textView.setText("您输入的单号不存在哟~");
+            }
+        };
 
         final Runnable nt = new Runnable() {
             @Override
@@ -61,6 +77,10 @@ public class NewSearching extends AppCompatActivity {
                             if (key.equalsIgnoreCase("Success")) {
                                 if (value.toString().equalsIgnoreCase("false")) {
                                     // Print error log
+                                    Message msg = new Message();
+                                    bd.putString("Sucess","false");
+                                    msg.setData(bd);
+                                    handler.sendMessage(msg);
                                     break;
                                 }
                             }

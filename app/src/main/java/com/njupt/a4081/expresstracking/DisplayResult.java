@@ -1,13 +1,19 @@
 package com.njupt.a4081.expresstracking;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -33,11 +39,14 @@ public class DisplayResult extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.express_info);
 
+        //初始化控件
         TextView expNo_textView = (TextView)findViewById(R.id.express_info_num_display);
         TextView expName_textView = (TextView)findViewById(R.id.express_info_comp_display);
         final LinearLayout expTraces_layout = (LinearLayout)findViewById(R.id.express_info_tracking_info_layout);
         final LinearLayout.LayoutParams layoutParams =
                 new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        final ScrollView expTraces_scrollView = (ScrollView)findViewById(R.id.express_info_tracking_info_display);
+        final Button expTracking_btn = (Button)findViewById(R.id.express_info_tracking_btn);
 
         final Intent iReceive = getIntent();
         final Bundle bd = iReceive.getExtras();
@@ -54,18 +63,26 @@ public class DisplayResult extends AppCompatActivity {
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 Bundle bundle = msg.getData();
-                //动态添加TextView
-                int i = 0;
-                while(!bundle.isEmpty()){
-                    i++;
-                    StringBuffer trace = new StringBuffer();
-                    TextView txtView = new TextView(DisplayResult.this);
-                    expTraces_layout.addView(txtView,layoutParams);
-                    trace.append(bundle.getString("AcceptTime" + i));
-                    trace.append(":");
-                    trace.append(bundle.getString("AcceptStation" + i));
-                    txtView.setText(trace);
+
+                //更改UI
+                if(bundle.getString("Traces").equalsIgnoreCase("no")){
+                    Resources pic = getResources();
+                    Drawable drawable = pic.getDrawable(R.drawable.notrace);
+                    expTraces_scrollView.setBackground(drawable);
+                    expTracking_btn.setVisibility(View.INVISIBLE);
                 }
+                else{
+                    for(int i =0;i < bundle.size()/2;i++){
+                        StringBuffer trace = new StringBuffer();
+                        TextView txtView = new TextView(DisplayResult.this);
+                        expTraces_layout.addView(txtView,layoutParams);
+                        trace.append(bundle.getString("AcceptTime" + i));
+                        trace.append(":");
+                        trace.append(bundle.getString("AcceptStation" + i));
+                        txtView.setText(trace);
+                    }
+                }
+
             }
         };
 
@@ -73,6 +90,11 @@ public class DisplayResult extends AppCompatActivity {
             @Override
             public void run() {
                 OrderDistinguish api = new OrderDistinguish();
+
+                //传消息给UI线程更新UI
+                Message msg = new Message();
+                Bundle bundle = new Bundle();
+
                 try {
                     //获取物流轨迹,根据时间划分
                     String traces = api.getOrderTracesByJson(expCode,expNo);
@@ -81,7 +103,6 @@ public class DisplayResult extends AppCompatActivity {
                     result.append("}");
 
                     Log.e("trace",result.toString());
-                    //获取AcceptTime和AcceptStation
                     try{
                         JSONObject jso = new JSONObject(result.toString());
                         Iterator iterator = jso.keys();
@@ -96,10 +117,15 @@ public class DisplayResult extends AppCompatActivity {
                             if (key.equalsIgnoreCase("State")) {
                                 if (value.toString().equalsIgnoreCase("0")) {
                                     //无轨迹处理
+                                    bundle.putString("Traces","no");
+                                    msg.setData(bundle);
+                                    handler.sendMessage(msg);
                                     break;
                                 }
-                                //有轨迹传值
                                 else {
+                                    //有轨迹传值
+                                    bundle.putString("Traces","yes");
+                                    //获取AcceptTime和AcceptStation
                                     try {
                                         JSONArray jsonArray = jso.getJSONArray("Traces");
                                         Log.e("1", "1");
@@ -117,8 +143,6 @@ public class DisplayResult extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
                                     //Map键值对转换到bundle
-                                    Message msg = new Message();
-                                    Bundle bundle = new Bundle();
                                     for (Map.Entry<String, String> entry : map.entrySet()) {
                                         bundle.putString(entry.getKey(), entry.getValue());
                                         Log.e("bundle", entry.getKey() + ":" + bundle.getString(entry.getKey()));
@@ -138,8 +162,6 @@ public class DisplayResult extends AppCompatActivity {
             }
         };
         new Thread(runnable).start();
-
-
     }
 
 }
