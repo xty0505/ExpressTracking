@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -78,7 +79,7 @@ public class NewSearching extends AppCompatActivity {
                                 if (value.toString().equalsIgnoreCase("false")) {
                                     // Print error log
                                     Message msg = new Message();
-                                    bd.putString("Sucess","false");
+                                    bd.putString("Success","false");
                                     msg.setData(bd);
                                     handler.sendMessage(msg);
                                     break;
@@ -92,13 +93,23 @@ public class NewSearching extends AppCompatActivity {
                                     Intent iDisplay = new Intent(NewSearching.this, DisplayResult
                                             .class);
 
-                                    JSONObject Jso = new JSONObject(value.toString().substring(1,
-                                            value.toString().length() - 1));
-                                    Iterator It = Jso.keys();
-                                    while (It.hasNext()) {
-                                        String Key = (String) It.next();
-                                        Object Value = Jso.get(Key);
-                                        bd.putString(Key, Value.toString());
+                                    JSONArray jsonArray = jso.getJSONArray("Shippers");
+                                    //单号不存在但Success=true
+                                    if(jsonArray.length() == 0){
+                                        Message msg = new Message();
+                                        bd.putString("Success","false");
+                                        msg.setData(bd);
+                                        handler.sendMessage(msg);
+                                        break;
+                                    }
+                                    for(int i =0;i < jsonArray.length();i++){
+                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                        Iterator It = jsonObject.keys();
+                                        while (It.hasNext()) {
+                                            String Key = (String) It.next();
+                                            Object Value = jsonObject.get(Key);
+                                            bd.putString(Key, Value.toString());
+                                        }
                                     }
                                     iDisplay.putExtras(bd);
                                     startActivity(iDisplay);

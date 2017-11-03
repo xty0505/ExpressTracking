@@ -203,6 +203,7 @@ public class OrderDistinguish {
             while (in.read(ch) != -1){
                 result.append(ch);
             }
+            Log.i("msg",result.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
