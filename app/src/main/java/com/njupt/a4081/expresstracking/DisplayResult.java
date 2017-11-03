@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.drawable.DrawerArrowDrawable;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,12 +75,13 @@ public class DisplayResult extends AppCompatActivity {
                     for (int i = 0; i < bundle.size() / 2; i++) {
                         StringBuffer trace = new StringBuffer();
                         TextView txtView = new TextView(DisplayResult.this);
+                        txtView.setAutoLinkMask(Linkify.ALL);
                         expTraces_layout.addView(txtView, layoutParams);
                         trace.append(bundle.getString("AcceptTime" + i));
                         trace.append(":");
                         trace.append(bundle.getString("AcceptStation" + i));
                         txtView.setText(trace);
-                    }
+                }
                 }
             }
         };
