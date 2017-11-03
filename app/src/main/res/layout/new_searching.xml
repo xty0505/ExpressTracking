@@ -21,4 +21,12 @@
         android:layout_below="@+id/new_searching_query_searchView"
         android:text="Button" />
 
+    <LinearLayout
+        android:id="@+id/new_searching_linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/new_searching_search_btn"
+        android:orientation="vertical"></LinearLayout>
+
 </RelativeLayout>

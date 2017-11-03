@@ -63,16 +63,26 @@ public class DisplayResult extends AppCompatActivity {
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 Bundle bundle = msg.getData();
-                //动态添加TextView
-                for(int i =0;i < bundle.size()/2;i++){
-                    StringBuffer trace = new StringBuffer();
-                    TextView txtView = new TextView(DisplayResult.this);
-                    expTraces_layout.addView(txtView,layoutParams);
-                    trace.append(bundle.getString("AcceptTime" + i));
-                    trace.append(":");
-                    trace.append(bundle.getString("AcceptStation" + i));
-                    txtView.setText(trace);
+
+                //更改UI
+                if(bundle.getString("Traces").equalsIgnoreCase("no")){
+                    Resources pic = getResources();
+                    Drawable drawable = pic.getDrawable(R.drawable.notrace);
+                    expTraces_scrollView.setBackground(drawable);
+                    expTracking_btn.setVisibility(View.INVISIBLE);
                 }
+                else{
+                    for(int i =0;i < bundle.size()/2;i++){
+                        StringBuffer trace = new StringBuffer();
+                        TextView txtView = new TextView(DisplayResult.this);
+                        expTraces_layout.addView(txtView,layoutParams);
+                        trace.append(bundle.getString("AcceptTime" + i));
+                        trace.append(":");
+                        trace.append(bundle.getString("AcceptStation" + i));
+                        txtView.setText(trace);
+                    }
+                }
+
             }
         };
 
@@ -80,6 +90,11 @@ public class DisplayResult extends AppCompatActivity {
             @Override
             public void run() {
                 OrderDistinguish api = new OrderDistinguish();
+
+                //传消息给UI线程更新UI
+                Message msg = new Message();
+                Bundle bundle = new Bundle();
+
                 try {
                     //获取物流轨迹,根据时间划分
                     String traces = api.getOrderTracesByJson(expCode,expNo);
@@ -88,7 +103,6 @@ public class DisplayResult extends AppCompatActivity {
                     result.append("}");
 
                     Log.e("trace",result.toString());
-                    //获取AcceptTime和AcceptStation
                     try{
                         JSONObject jso = new JSONObject(result.toString());
                         Iterator iterator = jso.keys();
@@ -103,14 +117,15 @@ public class DisplayResult extends AppCompatActivity {
                             if (key.equalsIgnoreCase("State")) {
                                 if (value.toString().equalsIgnoreCase("0")) {
                                     //无轨迹处理
-                                    Resources pic = getResources();
-                                    Drawable drawable = pic.getDrawable(R.drawable.notrace);
-                                    expTraces_scrollView.setBackground(drawable);
-                                    expTracking_btn.setVisibility(View.INVISIBLE);
+                                    bundle.putString("Traces","no");
+                                    msg.setData(bundle);
+                                    handler.sendMessage(msg);
                                     break;
                                 }
-                                //有轨迹传值
                                 else {
+                                    //有轨迹传值
+                                    bundle.putString("Traces","yes");
+                                    //获取AcceptTime和AcceptStation
                                     try {
                                         JSONArray jsonArray = jso.getJSONArray("Traces");
                                         Log.e("1", "1");
@@ -128,8 +143,6 @@ public class DisplayResult extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
                                     //Map键值对转换到bundle
-                                    Message msg = new Message();
-                                    Bundle bundle = new Bundle();
                                     for (Map.Entry<String, String> entry : map.entrySet()) {
                                         bundle.putString(entry.getKey(), entry.getValue());
                                         Log.e("bundle", entry.getKey() + ":" + bundle.getString(entry.getKey()));
