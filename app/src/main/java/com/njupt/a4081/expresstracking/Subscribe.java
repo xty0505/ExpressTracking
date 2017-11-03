@@ -1,14 +1,8 @@
 package com.njupt.a4081.expresstracking;
 
 /**
- * Created by xty on 2017/11/1.
+ * Created by Hsu on 2017/11/3.
  */
-
-
-
-import android.os.Bundle;
-import android.os.TokenWatcher;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,62 +12,60 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.security.MessageDigest;
 
 /**
  *
- * 快递鸟单号识别接口
+ * 快递鸟在途监控：物流跟踪(增值版)接口
  *
- * @技术QQ群: 456320272
+ * @see: http://kdniao.com/api-monitor
  * @copyright: 深圳市快金数据技术服务有限公司
  *
- *
- * ID和Key请到官网申请：http://www.kdniao.com/ServiceApply.aspx
+ * ID和Key请到官网申请：http://kdniao.com/reg
  */
 
-public class OrderDistinguish {
-
-    //DEMO
-
+public class Subscribe {
 
     //电商ID
     private String EBusinessID="1310127";
     //电商加密私钥，快递鸟提供，注意保管，不要泄漏
     private String AppKey="64fe77b0-3503-48a6-9746-9c66474ab3e2";
-    //请求url
-    private String ReqURL="http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx";
+    //请求url --测试地址 *：测试订阅接口是否可用。
+    private String ReqURL = "http://testapi.kdniao.cc:8081/api/dist";
+    //请求url --正式地址 *：需在正式地址请求才会触发后台推送物流轨迹。
+    //private String ReqURL = "http://api.kdniao.cc/api/dist";
 
     /**
-     * Json方式 单号识别
+     * 回调接口
+     * @throws Exception
+      */
+    public String CallBackByJson(String RequestData, String RequestType, String Data) throws
+            Exception{
+        String rS  =  "{ 'EBusinessID': '"+ EBusinessID + "', 'UpdateTime':'"+ new SimpleDateFormat
+                ("yyyy-MM-dd hh:mm:ss").format(new Date()) +"', 'Success': true, 'Reason': ''}";
+        String rF  =  "{ 'EBusinessID': '"+ EBusinessID + "', 'UpdateTime':'"+ new SimpleDateFormat
+                ("yyyy-MM-dd hh:mm:ss").format(new Date()) +"', 'Success': false, 'Reason': ''}";
+        return  rS;
+    }
+
+
+
+    /**
+     * Json方式  物流信息订阅
      * @throws Exception
      */
-    public String getOrderTracesByJson(String expNo) throws Exception{
-        String requestData= "{'LogisticCode':'" + expNo + "'}";
+    public String orderTracesSubByJson(String ShipperCode, String LogisticCode) throws Exception{
+        String requestData="{'ShipperCode':'" + ShipperCode + "'," +
+                "'LogisticCode':'" + LogisticCode + "'}";
 
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         params.put("RequestData", urlEncoder(requestData, "UTF-8"));
         params.put("EBusinessID", EBusinessID);
-        params.put("RequestType", "2002");
-        String dataSign=encrypt(requestData, AppKey, "UTF-8");
-        params.put("DataSign", urlEncoder(dataSign, "UTF-8"));
-        params.put("DataType", "2");
-
-        String result=sendPost(ReqURL, params);
-
-        //根据公司业务处理返回的信息......
-
-        return result;
-    }
-    public String getOrderTracesByJson(String expCode, String expNo) throws Exception{
-        String requestData= "{'OrderCode':'','ShipperCode':'" + expCode + "','LogisticCode':'" + expNo + "'}";
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("RequestData", urlEncoder(requestData, "UTF-8"));
-        params.put("EBusinessID", EBusinessID);
-        params.put("RequestType", "1002");
+        params.put("RequestType", "8008");
         String dataSign=encrypt(requestData, AppKey, "UTF-8");
         params.put("DataSign", urlEncoder(dataSign, "UTF-8"));
         params.put("DataType", "2");
@@ -180,11 +172,9 @@ public class OrderDistinguish {
                     param.append(entry.getKey());
                     param.append("=");
                     param.append(entry.getValue());
-                    //System.out.println(entry.getKey()+":"+entry.getValue());
-                    Log.i("msg",entry.getKey()+":"+entry.getValue());
+                    System.out.println(entry.getKey()+":"+entry.getValue());
                 }
-                //System.out.println("param:"+param.toString());
-                Log.i("msg",param.toString());
+                System.out.println("param:"+param.toString());
                 out.write(param.toString());
             }
             // flush输出流的缓冲
@@ -195,10 +185,9 @@ public class OrderDistinguish {
             /*
             String line;
             while ((line = in.readLine()) != null) {
-                Log.i("msg ",line);
                 result.append(line);
-                result.append("\n");
-            }*/
+            }
+            */
             char[] ch = new char[1];
             while (in.read(ch) != -1){
                 result.append(ch);
@@ -222,7 +211,6 @@ public class OrderDistinguish {
         }
         return result.toString();
     }
-
 
     private static char[] base64EncodeChars = new char[] {
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
