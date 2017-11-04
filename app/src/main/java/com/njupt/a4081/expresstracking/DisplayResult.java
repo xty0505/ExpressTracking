@@ -81,7 +81,7 @@ public class DisplayResult extends AppCompatActivity {
                         trace.append(":");
                         trace.append(bundle.getString("AcceptStation" + i));
                         txtView.setText(trace);
-                }
+                    }
                 }
             }
         };
@@ -125,7 +125,6 @@ public class DisplayResult extends AppCompatActivity {
                                     //获取AcceptTime和AcceptStation
                                     try {
                                         JSONArray jsonArray = jso.getJSONArray("Traces");
-                                        Log.e("1", "1");
                                         for (int i = 0; i < jsonArray.length(); i++) {
                                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                                             Iterator iterator1 = jsonObject.keys();
