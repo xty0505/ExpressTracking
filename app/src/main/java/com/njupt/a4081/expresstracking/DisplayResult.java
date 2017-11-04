@@ -157,11 +157,10 @@ public class DisplayResult extends AppCompatActivity {
             }
         }).start();
 
-
-        // 实时通知
-        expTracking_btn.setOnClickListener(new View.OnClickListener() {
+        //Subscribe请求网络线程
+        final Runnable runnable = new Runnable() {
             @Override
-            public void onClick(View v) {
+            public void run() {
                 Subscribe api = new Subscribe();
                 try {
                     String result = api.orderTracesSubByJson(expNo, expCode);
@@ -170,6 +169,13 @@ public class DisplayResult extends AppCompatActivity {
                 } catch (Exception e) {
                     Log.e("error", e.toString());
                 }
+            }
+        };
+        // 实时通知
+        expTracking_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(runnable).start();
             }
         });
 
