@@ -131,8 +131,8 @@ public class HistorySearching extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo adaptInfo = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int selectedPosition = adaptInfo.position;
-        ListView lv = (ListView)findViewById(R.id.history_display_list_view);
-        HashMap<String,String > map= (HashMap<String, String>) lv.getItemAtPosition(selectedPosition);
+        final ListView lv = (ListView)findViewById(R.id.history_display_list_view);
+        final HashMap<String,String > map= (HashMap<String, String>) lv.getItemAtPosition(selectedPosition);
         switch (item.getItemId()){
             case 0:
                 Intent iDisplayResult = new Intent(HistorySearching.this,DisplayResult.class);
@@ -144,18 +144,32 @@ public class HistorySearching extends AppCompatActivity {
                 startActivity(iDisplayResult);
                 return true;
             case 1:
-                Toast.makeText(HistorySearching.this,
-                        "你确定删除该条查询记录吗?",Toast.LENGTH_LONG).show();
+                //确认对话框
+                ConfirmDialog confirmDialog = new ConfirmDialog();
+                confirmDialog.setDialogClickListener(new ConfirmDialog.onDialogClickListener() {
+                    @Override
+                    public void onConfirmClick() {
+                        try{
+                            SearchingHistoryDataHelper dh =
+                                    new SearchingHistoryDataHelper(HistorySearching.this);
+                            dh.DeleteHistory(map.get("LogisticCode"));
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        lv.setAdapter(new MyAdapter(HistorySearching.this,
+                                RegisterListView(HistorySearching.this,c2nMap)));
+                        Toast.makeText(HistorySearching.this,
+                                "你已经成功删除~",Toast.LENGTH_LONG).show();
+                    }
 
-                try{
-                    SearchingHistoryDataHelper dh = new SearchingHistoryDataHelper(HistorySearching.this);
-                    dh.DeleteHistory(map.get("LogisticCode"));
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-                lv.setAdapter(new MyAdapter(HistorySearching.this,RegisterListView(HistorySearching.this,c2nMap)));
-
+                    @Override
+                    public void onCancelClick() {
+                        //取消操作
+                    }
+                });
+                confirmDialog.show(getFragmentManager(),"");
+                Log.e("dialog",getFragmentManager().toString());
         }
         return false;
     }
