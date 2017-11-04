@@ -49,6 +49,23 @@ public class SearchingHistoryDataHelper {
         return true;
     }
 
+    public boolean DeleteHistory(String num){
+        db = oh.getWritableDatabase();
+        String DeleteString = "delete from " + TABLENAME + " where Number = " + num;
+        try{
+            db.execSQL(DeleteString);
+        }
+        catch (Exception exception)
+        {
+            Log.e("text",exception.toString());
+            return false;
+        }
+        finally {
+            db.close();
+        }
+        return true;
+    }
+
     public List<String> DisplayHistory(){
         db = oh.getWritableDatabase();
         List<String> rtn = new ArrayList<>();

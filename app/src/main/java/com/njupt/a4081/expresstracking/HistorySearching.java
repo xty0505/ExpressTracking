@@ -1,18 +1,28 @@
 package com.njupt.a4081.expresstracking;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import org.w3c.dom.ls.LSException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.PublicKey;
+import java.sql.SQLDataException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,11 +35,11 @@ import java.util.Map;
 
 public class HistorySearching extends AppCompatActivity {
 
+    private Map<String, String> c2nMap = new HashMap<>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.history_display);
-        Map<String, String> c2nMap = new HashMap<>();
 
         // CompanyCode to Name
         try{
@@ -51,8 +61,34 @@ public class HistorySearching extends AppCompatActivity {
         }
 
         // 绑定ListView
-        SearchingHistoryDataHelper dh = new SearchingHistoryDataHelper(HistorySearching.this);
         ListView lv = (ListView)findViewById(R.id.history_display_list_view);
+        final List<Map<String, String>> HistoryMap = RegisterListView(HistorySearching.this,c2nMap);
+        Log.e("test", HistoryMap.toString());
+        MyAdapter myAdapter = new MyAdapter(HistorySearching.this, HistoryMap);
+        lv.setAdapter(myAdapter);
+        //绑定Menu
+        registerForContextMenu(lv);
+
+
+        // 点击intenet
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent iDisplayResult = new Intent(HistorySearching.this, DisplayResult.class);
+
+                Bundle mBundle = new Bundle();
+                mBundle.putString("ShipperCode", HistoryMap.get((int)id).get("ShipperCode"));
+                mBundle.putString("ShipperName", HistoryMap.get((int)id).get("ShipperName"));
+                mBundle.putString("LogisticCode", HistoryMap.get((int)id).get("LogisticCode"));
+                iDisplayResult.putExtras(mBundle);
+                startActivity(iDisplayResult);
+            }
+        });
+    }
+
+    //绑定ListView
+    public List<Map<String, String>> RegisterListView(Context context, Map<String, String> c2nMap){
+        SearchingHistoryDataHelper dh = new SearchingHistoryDataHelper(HistorySearching.this);
         List<String> HistoryData = new ArrayList<>();
         HistoryData.addAll(dh.DisplayHistory());
         final List<Map<String, String>> HistoryMap = new ArrayList<>();
@@ -71,26 +107,56 @@ public class HistorySearching extends AppCompatActivity {
                 }
             }
         }
+        return HistoryMap;
+    }
 
-        Log.e("test", HistoryMap.toString());
+    //设置Menu选项
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        int groupId = 0;
+        //显示轨迹
+        int displayCommand_id = 0;
+        int displayCommand_order = 0;
+        String displayCommand = "显示快递轨迹";
+        menu.add(groupId,displayCommand_id,displayCommand_order,displayCommand);
+        //删除
+        int deleteCommand_id = 1;
+        int deleteCommand_order = 1;
+        String deleteCommand = "删除该记录";
+        menu.add(groupId,deleteCommand_id,deleteCommand_order,deleteCommand);
+    }
 
-        MyAdapter myAdapter = new MyAdapter(HistorySearching.this, HistoryMap);
-        lv.setAdapter(myAdapter);
-
-
-        // 点击intenet
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent iDisplayResult = new Intent(HistorySearching.this, DisplayResult.class);
-
+    //选项事件
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo adaptInfo = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        int selectedPosition = adaptInfo.position;
+        ListView lv = (ListView)findViewById(R.id.history_display_list_view);
+        HashMap<String,String > map= (HashMap<String, String>) lv.getItemAtPosition(selectedPosition);
+        switch (item.getItemId()){
+            case 0:
+                Intent iDisplayResult = new Intent(HistorySearching.this,DisplayResult.class);
                 Bundle mBundle = new Bundle();
-                mBundle.putString("ShipperCode", HistoryMap.get((int)id).get("ShipperCode"));
-                mBundle.putString("ShipperName", HistoryMap.get((int)id).get("ShipperName"));
-                mBundle.putString("LogisticCode", HistoryMap.get((int)id).get("LogisticCode"));
+                mBundle.putString("ShipperCode", map.get("ShipperCode"));
+                mBundle.putString("ShipperName", map.get("ShipperName"));
+                mBundle.putString("LogisticCode", map.get("LogisticCode"));
                 iDisplayResult.putExtras(mBundle);
                 startActivity(iDisplayResult);
-            }
-        });
+                return true;
+            case 1:
+                Toast.makeText(HistorySearching.this,
+                        "你确定删除该条查询记录吗?",Toast.LENGTH_LONG).show();
+
+                try{
+                    SearchingHistoryDataHelper dh = new SearchingHistoryDataHelper(HistorySearching.this);
+                    dh.DeleteHistory(map.get("LogisticCode"));
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                lv.setAdapter(new MyAdapter(HistorySearching.this,RegisterListView(HistorySearching.this,c2nMap)));
+
+        }
+        return false;
     }
 }
