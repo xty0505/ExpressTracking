@@ -5,9 +5,6 @@ package com.njupt.a4081.expresstracking;
  */
 
 
-
-import android.os.Bundle;
-import android.os.TokenWatcher;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -20,7 +17,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

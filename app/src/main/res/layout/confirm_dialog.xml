@@ -8,7 +8,7 @@
         android:layout_width="280dp"
         android:layout_height="120dp"
         android:gravity="center"
-        android:text="您确定要删除此记录吗？" />
+        android:text="您确定要删除吗?" />
 
     <View
         android:layout_width="match_parent"

@@ -4,14 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
-import android.text.style.TtsSpan;
 import android.util.Log;
 
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLData;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -83,6 +78,11 @@ public class SearchingHistoryDataHelper {
         return rtn;
     }
 
+    public void DeleteAll(){
+        db = oh.getReadableDatabase();
+        db.execSQL("delete from " + TABLENAME);
+        db.close();
+    }
     private class OpenHelper extends SQLiteOpenHelper {
 
         private OpenHelper(Context context, String DBName){

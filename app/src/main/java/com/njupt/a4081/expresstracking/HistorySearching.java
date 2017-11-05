@@ -3,25 +3,19 @@ package com.njupt.a4081.expresstracking;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.w3c.dom.ls.LSException;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.PublicKey;
-import java.sql.SQLDataException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,6 +27,8 @@ import java.util.Map;
  */
 
 public class HistorySearching extends AppCompatActivity {
+
+    SearchingHistoryDataHelper dh = new SearchingHistoryDataHelper(HistorySearching.this);
 
     private Map<String, String> c2nMap = new HashMap<>();
     @Override
@@ -61,7 +57,8 @@ public class HistorySearching extends AppCompatActivity {
 
         // 绑定ListView
         ListView lv = (ListView)findViewById(R.id.history_display_list_view);
-        final List<Map<String, String>> HistoryMap = RegisterListView(HistorySearching.this,c2nMap);
+        final List<Map<String, String>> HistoryMap = RegisterListView(HistorySearching.this,
+                c2nMap);
         Log.e("test", HistoryMap.toString());
         MyAdapter myAdapter = new MyAdapter(HistorySearching.this, HistoryMap);
         lv.setAdapter(myAdapter);
@@ -83,11 +80,36 @@ public class HistorySearching extends AppCompatActivity {
                 startActivity(iDisplayResult);
             }
         });
+
+
+        // 清空记录
+        findViewById(R.id.history_display_delete_all).setOnClickListener(new View.OnClickListener() {
+            ListView lv = (ListView)findViewById(R.id.history_display_list_view);
+            @Override
+            public void onClick(View v) {
+                ConfirmDialog confirmDialog = new ConfirmDialog();
+                confirmDialog.setDialogClickListener(new ConfirmDialog.onDialogClickListener() {
+                    @Override
+                    public void onConfirmClick() {
+                        dh.DeleteAll();
+                        lv.setAdapter(new MyAdapter(HistorySearching.this,
+                                RegisterListView(HistorySearching.this, c2nMap)));
+                        Toast.makeText(HistorySearching.this,
+                                "已清空",Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onCancelClick() {
+                        //取消操作
+                    }
+                });
+                confirmDialog.show(getFragmentManager(),"");
+            }
+        });
     }
 
     //绑定ListView
     public List<Map<String, String>> RegisterListView(Context context, Map<String, String> c2nMap){
-        SearchingHistoryDataHelper dh = new SearchingHistoryDataHelper(HistorySearching.this);
         List<String> HistoryData = new ArrayList<>();
         HistoryData.addAll(dh.DisplayHistory());
         final List<Map<String, String>> HistoryMap = new ArrayList<>();
@@ -131,7 +153,8 @@ public class HistorySearching extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo adaptInfo = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int selectedPosition = adaptInfo.position;
         final ListView lv = (ListView)findViewById(R.id.history_display_list_view);
-        final HashMap<String,String > map= (HashMap<String, String>) lv.getItemAtPosition(selectedPosition);
+        final HashMap<String, String> map= (HashMap<String, String>) lv.getItemAtPosition
+                (selectedPosition);
         switch (item.getItemId()){
             case 0:
                 Intent iDisplayResult = new Intent(HistorySearching.this,DisplayResult.class);
@@ -149,8 +172,6 @@ public class HistorySearching extends AppCompatActivity {
                     @Override
                     public void onConfirmClick() {
                         try{
-                            SearchingHistoryDataHelper dh =
-                                    new SearchingHistoryDataHelper(HistorySearching.this);
                             dh.DeleteHistory(map.get("LogisticCode"));
                         }
                         catch (Exception e){
@@ -159,7 +180,7 @@ public class HistorySearching extends AppCompatActivity {
                         lv.setAdapter(new MyAdapter(HistorySearching.this,
                                 RegisterListView(HistorySearching.this,c2nMap)));
                         Toast.makeText(HistorySearching.this,
-                                "你已经成功删除~",Toast.LENGTH_LONG).show();
+                                "你已经成功删除",Toast.LENGTH_LONG).show();
                     }
 
                     @Override
@@ -171,5 +192,6 @@ public class HistorySearching extends AppCompatActivity {
                 Log.e("dialog",getFragmentManager().toString());
         }
         return false;
+
     }
 }

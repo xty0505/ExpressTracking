@@ -1,7 +1,6 @@
 package com.njupt.a4081.expresstracking;
 
 import android.content.Context;
-import android.icu.text.IDNA;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

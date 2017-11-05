@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.TextView;
 
 /**
  * Created by Administrator on 2017/11/4.
@@ -18,6 +17,7 @@ import android.widget.TextView;
 public class ConfirmDialog extends DialogFragment {
     private View mView;
     private onDialogClickListener myListener;
+
 
     //初始化对话框
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -30,8 +30,8 @@ public class ConfirmDialog extends DialogFragment {
 
     //绑定按钮
     private void initView() {
-        Button confirm_btn = (Button)mView.findViewById(R.id.confirm_dialog_button_confirm);
-        Button cancel_btn = (Button)mView.findViewById(R.id.confirm_dialog_button_cancel);
+        Button confirm_btn = mView.findViewById(R.id.confirm_dialog_button_confirm);
+        Button cancel_btn = mView.findViewById(R.id.confirm_dialog_button_cancel);
 
         confirm_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,8 +55,8 @@ public class ConfirmDialog extends DialogFragment {
     }
 
     public interface onDialogClickListener{
-        public void onConfirmClick();
-        public void onCancelClick();
+        void onConfirmClick();
+        void onCancelClick();
     }
     public void setDialogClickListener(onDialogClickListener myListener){
         this.myListener = myListener;

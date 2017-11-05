@@ -1,6 +1,5 @@
 package com.njupt.a4081.expresstracking;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -9,7 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.View;
@@ -23,12 +21,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.xml.transform.TransformerException;
 
 /**
  * Created by Hsu on 2017/11/2.

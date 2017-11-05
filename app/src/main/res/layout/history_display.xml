@@ -7,6 +7,14 @@
     <ListView
         android:id="@+id/history_display_list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
         android:descendantFocusability="blocksDescendants"/>
+
+    <Button
+        android:id="@+id/history_display_delete_all"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="@string/DeleteAll"/>
 </LinearLayout>
