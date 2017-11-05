@@ -21,14 +21,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".NewSearching">
-            <intent-filter>
-                <action android:name="android.intent.action.DEFAULT"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-
         <activity android:name=".DisplayResult">
             <intent-filter>
                 <action android:name="android.intent.action.DEFAULT"/>
@@ -38,6 +30,13 @@
         </activity>
 
         <activity android:name=".HistorySearching">
+            <intent-filter>
+                <action android:name="android.intent.action.DEFAULT"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".NewSearchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.DEFAULT"/>
 

@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         NewSearching.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent iNewSearching = new Intent(MainActivity.this, NewSearching.class);
+                Intent iNewSearching = new Intent(MainActivity.this, NewSearchActivity.class);
                 startActivity(iNewSearching);
             }
         });
