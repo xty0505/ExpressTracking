@@ -212,7 +212,7 @@ public class MySearchView extends LinearLayout implements View.OnClickListener {
                         super.handleMessage(msg);
                         TextView textView = new TextView(mContext);
                         search_layout.addView(textView, layoutParams);
-                        textView.setText("您输入的单号不存在哟~");
+                        textView.setText("客官，您输入的单号不存在哟~");
                     }
                 };
                 new Thread(new Runnable() {
