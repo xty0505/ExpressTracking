@@ -87,23 +87,29 @@ public class HistorySearching extends AppCompatActivity {
             ListView lv = (ListView)findViewById(R.id.history_display_list_view);
             @Override
             public void onClick(View v) {
-                ConfirmDialog confirmDialog = new ConfirmDialog();
-                confirmDialog.setDialogClickListener(new ConfirmDialog.onDialogClickListener() {
-                    @Override
-                    public void onConfirmClick() {
-                        dh.DeleteAll();
-                        lv.setAdapter(new MyAdapter(HistorySearching.this,
-                                RegisterListView(HistorySearching.this, c2nMap)));
-                        Toast.makeText(HistorySearching.this,
-                                "已清空",Toast.LENGTH_LONG).show();
-                    }
+                if(lv.getAdapter().getCount() != 0) {
+                    ConfirmDialog confirmDialog = new ConfirmDialog();
+                    confirmDialog.setDialogClickListener(new ConfirmDialog.onDialogClickListener() {
+                        @Override
+                        public void onConfirmClick() {
+                            dh.DeleteAll();
+                            lv.setAdapter(new MyAdapter(HistorySearching.this,
+                                    RegisterListView(HistorySearching.this, c2nMap)));
+                            Toast.makeText(HistorySearching.this,
+                                    "已清空", Toast.LENGTH_LONG).show();
+                        }
 
-                    @Override
-                    public void onCancelClick() {
-                        //取消操作
-                    }
-                });
-                confirmDialog.show(getFragmentManager(),"");
+                        @Override
+                        public void onCancelClick() {
+                            //取消操作
+                        }
+                    });
+                    confirmDialog.show(getFragmentManager(), "");
+                }
+                else {
+                    Toast.makeText(HistorySearching.this,"没有需要清空的记录",
+                            Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
