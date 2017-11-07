@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -21,8 +22,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,10 +42,10 @@ public class DisplayResult extends AppCompatActivity {
         //初始化控件
         TextView expNo_textView = (TextView)findViewById(R.id.express_info_num_display);
         TextView expName_textView = (TextView)findViewById(R.id.express_info_comp_display);
-        final LinearLayout expTraces_layout = (LinearLayout)findViewById(R.id.express_info_tracking_info_layout);
+        /*final LinearLayout expTraces_layout = (LinearLayout)findViewById(R.id.express_info_tracking_info_layout);
         final LinearLayout.LayoutParams layoutParams =
-                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        final ScrollView expTraces_scrollView = (ScrollView)findViewById(R.id.express_info_tracking_info_display);
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);*/
+        final ListView expTraces_listView = (ListView) findViewById(R.id.express_info_tracking_info_display);
         final Button expTracking_btn = (Button)findViewById(R.id.express_info_tracking_btn);
 
         final Intent iReceive = getIntent();
@@ -64,11 +68,16 @@ public class DisplayResult extends AppCompatActivity {
                 if (bundle.getString("Traces").equalsIgnoreCase("no")) {
                     Resources pic = getResources();
                     Drawable drawable = pic.getDrawable(R.drawable.no_search);
-                    expTraces_scrollView.setBackground(drawable);
+                    expTraces_listView.setBackground(drawable);
                     expTracking_btn.setVisibility(View.INVISIBLE);
                 } else {
+                    List<Map<String, String>> dItem = new ArrayList<>();
                     for (int i = 0; i < bundle.size() / 2; i++) {
-                        StringBuffer trace = new StringBuffer();
+                        Map<String, String> hItem = new HashMap<>();
+                        hItem.put("AcceptTime", bundle.getString("AcceptTime" + i));
+                        hItem.put("AcceptStation", bundle.getString("AcceptStation" + i));
+                        dItem.add(hItem);
+                        /*StringBuffer trace = new StringBuffer();
                         TextView txtView = new TextView(DisplayResult.this);
                         txtView.setAutoLinkMask(Linkify.ALL);
                         expTraces_layout.addView(txtView, layoutParams);
@@ -76,7 +85,13 @@ public class DisplayResult extends AppCompatActivity {
                         trace.append(":");
                         trace.append(bundle.getString("AcceptStation" + i));
                         txtView.setText(trace);
+                        */
                     }
+                    //List倒序
+                    Collections.reverse(dItem);
+
+                    DisplayAdapter DA = new DisplayAdapter(DisplayResult.this, dItem);
+                    expTraces_listView.setAdapter(DA);
                 }
             }
         };
