@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,15 +78,6 @@ public class DisplayResult extends AppCompatActivity {
                         hItem.put("AcceptTime", bundle.getString("AcceptTime" + i));
                         hItem.put("AcceptStation", bundle.getString("AcceptStation" + i));
                         dItem.add(hItem);
-                        /*StringBuffer trace = new StringBuffer();
-                        TextView txtView = new TextView(DisplayResult.this);
-                        txtView.setAutoLinkMask(Linkify.ALL);
-                        expTraces_layout.addView(txtView, layoutParams);
-                        trace.append(bundle.getString("AcceptTime" + i));
-                        trace.append(":");
-                        trace.append(bundle.getString("AcceptStation" + i));
-                        txtView.setText(trace);
-                        */
                     }
                     //List倒序
                     Collections.reverse(dItem);
@@ -186,7 +178,9 @@ public class DisplayResult extends AppCompatActivity {
         expTracking_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Thread(runnable).start();
+                // new Thread(runnable).start();
+                Toast.makeText(DisplayResult.this,
+                        "该功能尚未完善, 敬请期待", Toast.LENGTH_SHORT).show();
             }
         });
 

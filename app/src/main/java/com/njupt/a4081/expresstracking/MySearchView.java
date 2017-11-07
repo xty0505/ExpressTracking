@@ -193,6 +193,11 @@ public class MySearchView extends LinearLayout implements View.OnClickListener {
                 break;*/
             case R.id.search_iv_delete:
                 etInput.setText("");
+                // 隐藏软键盘
+                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+
+                // 隐藏删除按钮
                 ivDelete.setVisibility(GONE);
                 break;
             case R.id.search_btn_back:
