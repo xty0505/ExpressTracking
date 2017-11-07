@@ -66,4 +66,11 @@
         android:layout_marginTop="10dp"
         android:background="#11000000"
         android:text="返回"/>
+
+    <LinearLayout
+        android:id="@+id/new_search_linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"></LinearLayout>
+
 </LinearLayout>

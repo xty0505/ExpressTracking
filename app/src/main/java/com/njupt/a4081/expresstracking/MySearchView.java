@@ -142,10 +142,6 @@ public class MySearchView extends LinearLayout implements View.OnClickListener {
      * @param text
      */
     private void notifyStartSearching(String text) {
-        if (mListener != null) {
-            mListener.onSearch(text);
-            Log.e("test", text);
-        }
         // 隐藏软键盘
         InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
@@ -201,10 +197,10 @@ public class MySearchView extends LinearLayout implements View.OnClickListener {
                 ((Activity) mContext).finish();
                 break;
             case R.id.new_search_search_btn:
-                final LinearLayout search_layout = findViewById(R.id.new_search_linearLayout);
+                final LinearLayout search_layout = this.findViewById(R.id.new_search_linearLayout);
                 final LinearLayout.LayoutParams layoutParams =
-                        new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
-                final EditText editText = findViewById(R.id.search_et_input);
+                        new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                final EditText editText = this.findViewById(R.id.search_et_input);
 
 
                 final Handler handler = new Handler() {
@@ -236,11 +232,13 @@ public class MySearchView extends LinearLayout implements View.OnClickListener {
                                     Object value = jso.get(key);
                                     if (key.equalsIgnoreCase("Success")) {
                                         if (value.toString().equalsIgnoreCase("false")) {
-                                            // Print error log
-                                            Message msg = new Message();
-                                            bd.putString("Success", "false");
-                                            msg.setData(bd);
-                                            handler.sendMessage(msg);
+                                            if (search_layout.getChildCount() == 0) {
+                                                // Print error log
+                                                Message msg = new Message();
+                                                bd.putString("Success", "false");
+                                                msg.setData(bd);
+                                                handler.sendMessage(msg);
+                                            }
                                             break;
                                         }
                                     } else if (key.equalsIgnoreCase("LogisticCode")) {
@@ -253,10 +251,12 @@ public class MySearchView extends LinearLayout implements View.OnClickListener {
                                             JSONArray jsonArray = jso.getJSONArray("Shippers");
                                             //单号不存在但Success=true
                                             if (jsonArray.length() == 0) {
-                                                Message msg = new Message();
-                                                bd.putString("Success", "false");
-                                                msg.setData(bd);
-                                                handler.sendMessage(msg);
+                                                if (search_layout.getChildCount() == 0) {
+                                                    Message msg = new Message();
+                                                    bd.putString("Success", "false");
+                                                    msg.setData(bd);
+                                                    handler.sendMessage(msg);
+                                                }
                                                 break;
                                             }
                                             for (int i = 0; i < jsonArray.length(); i++) {
@@ -282,11 +282,11 @@ public class MySearchView extends LinearLayout implements View.OnClickListener {
                                     }
                                 }
                             } catch (JSONException e) {
-                                e.printStackTrace();
+                                Log.e("JSON2Re", e.toString());
                             }
 
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            Log.e("search api", e.toString());
                         }
                     }
                 }).start();
@@ -305,13 +305,6 @@ public class MySearchView extends LinearLayout implements View.OnClickListener {
          * @param text 传入补全后的文本
          */
         void onRefreshAutoComplete(String text);
-
-        /**
-         * 开始搜索
-         *
-         * @param text 传入输入框的文本
-         */
-        void onSearch(String text);
     }
 
 }

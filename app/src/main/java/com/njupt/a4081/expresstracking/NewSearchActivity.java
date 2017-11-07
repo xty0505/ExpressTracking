@@ -132,14 +132,4 @@ public class NewSearchActivity extends AppCompatActivity implements MySearchView
         //更新数据
         getAutoCompleteData(text);
     }
-
-    /**
-     * 点击搜索键时edit text触发的回调
-     *
-     * @param text
-     */
-    @Override
-    public void onSearch(final String text) {
-
-    }
 }
