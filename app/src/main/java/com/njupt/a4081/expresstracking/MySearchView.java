@@ -112,7 +112,7 @@ public class MySearchView extends LinearLayout implements View.OnClickListener {
                 etInput.setSelection(text.length());
                 // hint list view gone and result list view show
                 lvTips.setVisibility(View.GONE);
-                notifyStartSearching(text);
+                notifyStartSearching();
             }
         });
 
@@ -129,7 +129,7 @@ public class MySearchView extends LinearLayout implements View.OnClickListener {
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     lvTips.setVisibility(GONE);
-                    notifyStartSearching(etInput.getText().toString());
+                    notifyStartSearching();
                 }
                 return true;
             }
@@ -139,12 +139,14 @@ public class MySearchView extends LinearLayout implements View.OnClickListener {
     /**
      * 通知监听者 进行搜索操作
      *
-     * @param text
      */
-    private void notifyStartSearching(String text) {
+    private void notifyStartSearching() {
+
         // 隐藏软键盘
         InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+
+        this.onClick(findViewById(R.id.new_search_search_btn));
     }
 
 
@@ -186,9 +188,9 @@ public class MySearchView extends LinearLayout implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.search_et_input:
+            /*case R.id.search_et_input:
                 lvTips.setVisibility(VISIBLE);
-                break;
+                break;*/
             case R.id.search_iv_delete:
                 etInput.setText("");
                 ivDelete.setVisibility(GONE);

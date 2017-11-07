@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ExpressTracking</string>
+    <string name="app_name">快查</string>
     <string name="query_search">输入单号一键查询</string>
     <string name="NumString">快递单号: </string>
     <string name="CompString">快递公司: </string>
