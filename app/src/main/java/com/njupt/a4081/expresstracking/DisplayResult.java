@@ -63,7 +63,7 @@ public class DisplayResult extends AppCompatActivity {
                 //更改UI
                 if (bundle.getString("Traces").equalsIgnoreCase("no")) {
                     Resources pic = getResources();
-                    Drawable drawable = pic.getDrawable(R.drawable.notrace);
+                    Drawable drawable = pic.getDrawable(R.drawable.no_search);
                     expTraces_scrollView.setBackground(drawable);
                     expTracking_btn.setVisibility(View.INVISIBLE);
                 } else {
