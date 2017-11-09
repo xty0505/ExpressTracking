@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -213,9 +214,10 @@ public class MySearchView extends LinearLayout implements View.OnClickListener {
                 final Handler handler = new Handler() {
                     public void handleMessage(Message msg) {
                         super.handleMessage(msg);
-                        TextView textView = new TextView(mContext);
+                        /*TextView textView = new TextView(mContext);
                         search_layout.addView(textView, layoutParams);
-                        textView.setText("客官，您输入的单号不存在哟~");
+                        textView.setText("客官，您输入的单号不存在哟~");*/
+                        Toast.makeText(mContext, "您输入的单号不存在~", Toast.LENGTH_SHORT).show();
                     }
                 };
                 new Thread(new Runnable() {
